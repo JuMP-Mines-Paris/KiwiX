@@ -1,9 +1,6 @@
 name: Run mail.py with French locale and virtual display
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     - cron: '0 21 * * *'
 
