@@ -1,0 +1,45 @@
+name: Run mail.py with French locale and virtual display
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 21 * * *'
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up French locale
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y locales xvfb
+          sudo locale-gen fr_FR.UTF-8
+          sudo update-locale LANG=fr_FR.UTF-8
+          echo "LANG=fr_FR.UTF-8" >> $GITHUB_ENV
+          echo "LC_ALL=fr_FR.UTF-8" >> $GITHUB_ENV
+          locale
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run mail.py with virtual display
+        env:
+          KIWIX_USERNAME: ${{ secrets.KIWIX_USERNAME }}
+          KIWIX_PASSWORD: ${{ secrets.KIWIX_PASSWORD }}
+          KIWIX_EMAIL_PASSWORD: ${{ secrets.KIWIX_EMAIL_PASSWORD }}
+          KIWIX_EMAIL_FROM: ${{ secrets.KIWIX_EMAIL_FROM }}
+          KIWIX_EMAIL_TO_LIST: ${{ secrets.KIWIX_EMAIL_TO_LIST }}
+          KIWIX_SITE: ${{ secrets.KIWIX_SITE }}
+          KIWIX_OFFRES: ${{ secrets.KIWIX_OFFRES }}
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" python mail.py
