@@ -13,7 +13,7 @@ import time, locale, sys, re
 sys.stdout.reconfigure(encoding='utf-8')
 locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 today = time.strftime("%d %B %Y", time.localtime()).replace(time.strftime("%B"), time.strftime("%B").capitalize())
-yesterday = (time.datetime.now() - time.datetime(days=1)).strftime("%d %B %Y").replace((time.datetime.now() - time.datetime(days=1)).strftime("%B"), (time.datetime.now() - time.datetime(days=1)).strftime("%B").capitalize())
+#yesterday = (time.datetime.now() - time.datetime(days=1)).strftime("%d %B %Y").replace((time.datetime.now() - time.datetime(days=1)).strftime("%B"), (time.datetime.now() - time.datetime(days=1)).strftime("%B").capitalize())
 
 
 def main():
