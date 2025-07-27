@@ -2,7 +2,7 @@ name: Run mail.py with French locale and virtual display
 
 on:
   schedule:
-    - cron: '0 21 * * *'
+    - cron: '0 6 * * *'
 
 jobs:
   run-script:

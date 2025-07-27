@@ -7,14 +7,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from datetime import datetime, timedelta
 import time, locale, sys, re
 
 
 sys.stdout.reconfigure(encoding='utf-8')
 locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 today = time.strftime("%d %B %Y", time.localtime()).replace(time.strftime("%B"), time.strftime("%B").capitalize())
-#yesterday = (time.datetime.now() - time.datetime(days=1)).strftime("%d %B %Y").replace((time.datetime.now() - time.datetime(days=1)).strftime("%B"), (time.datetime.now() - time.datetime(days=1)).strftime("%B").capitalize())
-
+yesterday = (d := datetime.now() - timedelta(days=1)).strftime("%d %B %Y").replace(d.strftime("%B"), d.strftime("%B").capitalize())
+print(yesterday)
 
 def main():
     driver = Driver(uc=True, headless=False)
@@ -56,12 +57,12 @@ def main():
                 entreprise = driver.find_element(By.CSS_SELECTOR, "div.MuiDialogContent-root.css-1ty026z > div > div > div > div:nth-child(2) > :nth-child(3)").text.strip()
                 contact = driver.find_element(By.CSS_SELECTOR, "div.MuiDialogContent-root.css-1ty026z > div > div > div > div:nth-child(2) > :nth-child(6)").text.strip()
                 email = driver.find_element(By.CSS_SELECTOR, "div.MuiDialogContent-root.css-1ty026z > div > div > div > div:nth-child(2) > :nth-child(7)").text.strip()
-                telephone = driver.find_element(By.CSS_SELECTOR, "div.MuiDialogContent-root.css-1ty026z > div > div > div > div:nth-child(2) > :nth-child(8)").text.strip()
+                telephone = (e.text.strip() if (e := next(iter(driver.find_elements(By.CSS_SELECTOR, "div.MuiDialogContent-root.css-1ty026z > div > div > div > div:nth-child(2) > :nth-child(8)")), None)) else None)
                 deadline = driver.find_element(By.CSS_SELECTOR, "div.MuiDialogContent-root.css-1ty026z > div > div > div > div > div > :nth-child(3)").text.strip()
                 remuneration = driver.find_elements(By.CSS_SELECTOR, "div.MuiDialogContent-root.css-1ty026z > div > div > div > div > div")[-2].text.strip().rstrip('\n').strip()
                 jour = re.search(r"Déposé le (.+)", driver.find_element(By.CSS_SELECTOR, "div.MuiDialogContent-root.css-1ty026z > div > div > div > div > div").text).group(1).strip()
 
-                if jour != today:
+                if jour != yesterday:
                     break
 
                 offre_dict = {"titre": titre, "secteurs": secteurs, "description": description, "entreprise": entreprise, "remuneration": remuneration, "contact": contact, "email": email, "telephone": telephone, "deadline": deadline}
